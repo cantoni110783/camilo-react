@@ -1,39 +1,23 @@
-import { useEffect, useState } from "react";
 import "./App.css";
+import { useFetch } from "./hooks";
+
+const url = "https://api.example.com/data";
+
+interface Data {
+  name: string;
+  lastName: string;
+  age: number;
+}
 
 function App() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("https://api.example.com/data");
-
-      if (!response.ok) {
-        throw new Error("Error en la solicitud de datos");
-      }
-
-      const jsonData = await response.json();
-      setData(jsonData);
-    } catch (err) {
-      setError(err as string);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { data, error, loading } = useFetch<Data>(url);
 
   if (loading) {
     return <div>Cargando...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>Error: {error.message}</div>;
   }
 
   return;
